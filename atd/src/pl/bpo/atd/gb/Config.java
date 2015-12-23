@@ -12,7 +12,8 @@ import org.apache.logging.log4j.Logger;
 
 public class Config {
 	private static final Logger logger = LogManager.getLogger(Config.class);
-	
+	private String rawDataFolder;
+	private String other;
 	private Properties properties  = new Properties();
 	
 	public Config(String configFilePath) {
@@ -25,7 +26,12 @@ public class Config {
 			logger.fatal(String.format("File %s was not accessible.", configFilePath));
 			System.exit(1);
 		}
-		System.out.println(properties.getProperty("rawdatafolder"));
+		rawDataFolder = properties.getProperty("rawdatafolder");
+
+	}
+
+	public String getRawDataFolder() {
+		return rawDataFolder;
 	}
 
 }
