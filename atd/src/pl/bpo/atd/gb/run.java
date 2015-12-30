@@ -9,6 +9,7 @@ public class run {
 		}
 		RePacker rePacker = new RePacker(args[0]);
 		rePacker.run();
+		rePacker.end();
 	}
 
 }

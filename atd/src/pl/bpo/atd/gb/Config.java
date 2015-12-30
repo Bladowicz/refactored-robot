@@ -13,6 +13,14 @@ import org.apache.logging.log4j.Logger;
 public class Config {
 	private static final Logger logger = LogManager.getLogger(Config.class);
 	private String rawDataFolder;
+	private String filePattern;
+
+	
+	public String getFilePattern() {
+		return filePattern;
+	}
+
+
 	private String other;
 	private Properties properties  = new Properties();
 	
@@ -26,7 +34,8 @@ public class Config {
 			logger.fatal(String.format("File %s was not accessible.", configFilePath));
 			System.exit(1);
 		}
-		rawDataFolder = properties.getProperty("rawdatafolder");
+		rawDataFolder = properties.getProperty("rawdatafolder", ".");
+		filePattern = properties.getProperty("pattern", "modelData.log.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}.gz");
 
 	}
 
