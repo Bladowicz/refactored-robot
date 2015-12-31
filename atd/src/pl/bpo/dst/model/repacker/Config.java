@@ -1,4 +1,4 @@
-package pl.bpo.atd.gb;
+package pl.bpo.dst.model.repacker;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,21 +12,13 @@ import org.apache.logging.log4j.Logger;
 
 public class Config {
 	private static final Logger logger = LogManager.getLogger(Config.class);
-	private String rawDataFolder;
-	private String filePattern;
+	private String destination;
+	private String workDir;
+	private Properties properties = new Properties();
 
-	
-	public String getFilePattern() {
-		return filePattern;
-	}
-
-
-	private String other;
-	private Properties properties  = new Properties();
-	
 	public Config(String configFilePath) {
-		try(FileInputStream fileInput = new FileInputStream(new File(configFilePath));){
-			properties.load(fileInput);		
+		try (FileInputStream fileInput = new FileInputStream(new File(configFilePath));) {
+			properties.load(fileInput);
 		} catch (FileNotFoundException e) {
 			logger.fatal(String.format("File %s was not found.", configFilePath));
 			System.exit(1);
@@ -34,13 +26,15 @@ public class Config {
 			logger.fatal(String.format("File %s was not accessible.", configFilePath));
 			System.exit(1);
 		}
-		rawDataFolder = properties.getProperty("rawdatafolder", ".");
-		filePattern = properties.getProperty("pattern", "modelData.log.[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}.gz");
-
+		workDir = properties.getProperty("workDir");
+		destination = properties.getProperty("destination");
 	}
 
-	public String getRawDataFolder() {
-		return rawDataFolder;
+	public String getDestination() {
+		return destination;
 	}
 
+	public String getWorkDir() {
+		return workDir;
+	}
 }
