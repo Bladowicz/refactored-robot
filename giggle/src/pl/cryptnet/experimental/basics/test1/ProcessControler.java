@@ -12,26 +12,23 @@ import org.apache.logging.log4j.Logger;
  */
 public class ProcessControler {
 	private static final Logger logger = LogManager.getLogger(ProcessControler.class);
-	private LinkedBlockingQueue toWrite;
+	private LinkedBlockingQueue<String> toWrite;
 	private SpamProducer[] producers;
 	private SpamConsumer[] consumers;
 	
 	
-	public ProcessControler() {
-		this(10, 10);
-
+	public ProcessControler(ProcessControlerConfiguration config) {
+		toWrite = new LinkedBlockingQueue<>(config.getQueueLength());
+		logger.info(String.format("Producers : [%d] with lifespan : [%d]", config.getProducerCount(), config.getProducerLifespan()));
+		createProducers(config.getProducerCount(), config.getProducerLifespan());
+		createConsumers(config.getConsumerCount());
 	}
 	
-	public ProcessControler(int producerCount, int producerLifespan) {
-		toWrite = new LinkedBlockingQueue(1024);
-		logger.info(String.format("Producers : [%d] with lifespan : [%d]", producerCount, producerLifespan));
-		createProducers(producerCount, producerLifespan);
-		createConsumers();
-	}
-	
-	private void createConsumers() {
-		// TODO Auto-generated method stub
-		
+	private void createConsumers(int consumerCount) {
+		consumers = new SpamConsumer[consumerCount];
+		for(int i=0; i<consumerCount; i++){
+			consumers[i] = new SpamConsumer(toWrite);
+		}
 	}
 
 	private void createProducers(int producerCount, int producerLifespan){
@@ -41,4 +38,10 @@ public class ProcessControler {
 		}
 	}
 
+	public void start() {
+		for (SpamConsumer consumer : consumers)
+			consumer.start();
+		for (SpamProducer producer : producers)
+			producer.start();
+	}
 }
